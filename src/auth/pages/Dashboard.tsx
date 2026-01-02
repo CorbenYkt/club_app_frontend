@@ -1,14 +1,12 @@
 import {useEffect, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {apiGet} from '../api';
-import {useAuth} from '../useAuth';
 
 function formatNZD(cents: number) {
     return new Intl.NumberFormat('en-NZ', {style: 'currency', currency: 'NZD'}).format(cents / 100);
 }
 
 export default function Dashboard() {
-    const {accessToken} = useAuth();
     const [savedThisMonthCents, setSavedThisMonthCents] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -21,10 +19,7 @@ export default function Dashboard() {
                 setError(null);
                 setLoading(true);
 
-                const r = await apiGet<{savedThisMonthCents: number}>(
-                    `/redeem/summary?period=month`,
-                    accessToken ?? undefined,
-                );
+                const r = await apiGet<{savedThisMonthCents: number}>(`/redeem/summary?period=month`);
 
                 if (!alive) return;
                 setSavedThisMonthCents(r.savedThisMonthCents ?? 0);
@@ -42,7 +37,7 @@ export default function Dashboard() {
         return () => {
             alive = false;
         };
-    }, [accessToken]);
+    }, []);
 
     return (
         <div className="bg-gray-50">

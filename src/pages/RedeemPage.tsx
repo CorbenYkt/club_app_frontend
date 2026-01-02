@@ -14,7 +14,7 @@ export default function RedeemPage() {
     const [sp] = useSearchParams();
     const challenge = sp.get('c');
     const {accessToken} = useAuth();
-
+    const {user} = useAuth();
     const [state, setState] = useState<'idle' | 'loading' | 'approved' | 'denied'>('idle');
     const [message, setMessage] = useState<string>('');
 
@@ -25,15 +25,14 @@ export default function RedeemPage() {
                 setMessage('Missing QR token.');
                 return;
             }
-            if (!accessToken) {
+            if (!user) {
                 setState('denied');
                 setMessage('Please sign in first.');
                 return;
             }
-
             setState('loading');
             try {
-                const res = await apiPost<VerifyResponse>('/redeem/verify', {challenge}, accessToken);
+                const res = await apiPost<VerifyResponse>('/redeem/verify', {challenge});
 
                 if (res.approved) {
                     setState('approved');

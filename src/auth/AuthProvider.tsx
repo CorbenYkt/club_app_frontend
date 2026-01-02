@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import type {AuthResponse} from './api';
-import {apiGet} from './api';
+import {apiGet, bindAuth} from './api';
 import {AuthContext} from './AuthContext';
 
 export function AuthProvider({children}: {children: React.ReactNode}) {
@@ -21,6 +21,16 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     const logout = () => setSession(null);
 
     useEffect(() => {
+        bindAuth({
+            getAccessToken: () => accessToken,
+            setAccessToken: (t) => setAccessToken(t),
+            onAuthFail: () => {
+                setSession(null);
+            },
+        });
+    }, [accessToken]);
+
+    useEffect(() => {
         (async () => {
             try {
                 const session = await apiGet<AuthResponse>('/auth/me');
@@ -35,7 +45,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
 
     const value = useMemo(
         () => ({user, accessToken, setSession, logout, bootstrapped}),
-        [user, accessToken, bootstrapped],
+        [user, accessToken, bootstrapped /* чтобы не было сюрпризов */],
     );
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
