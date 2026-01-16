@@ -1,38 +1,31 @@
-import {Link} from 'react-router-dom';
 import {useAuth} from '../auth/useAuth';
-import DashboardPage from '../auth/pages/Dashboard';
+import {Navigate} from 'react-router-dom';
 
 const features = [
     {
         emoji: '🎯',
-        title: 'Simple & fast',
-        text: 'Sign in, scan a venue QR, and redeem your discount in seconds',
+        title: 'Member Rates, No Fuss',
+        text: 'Forget coupon shame. You’re a member of the club. Flash your pass, get the insider price, and move on with your day.',
         bg: 'bg-blue-50',
     },
     {
         emoji: '🛡️',
-        title: 'No hassle',
-        text: 'No cards to carry, no coupons to print — just your phone',
+        title: 'Supporting Independent Spots',
+        text: 'We partner with the local cafes and bars you actually visit in the CBD. No corporate chains, no middlemen. Your money stays with the person making your coffee',
         bg: 'bg-green-50',
     },
     {
         emoji: '🏪',
-        title: 'Local & authentic',
-        text: 'Support New Zealand venues while saving money every time you go',
+        title: 'The Real Math',
+        text: 'Watch your savings grow in real-time on your dashboard. If you use it just twice a week, the pass pays for itself several times over',
         bg: 'bg-purple-50',
-    },
-    {
-        emoji: '💸',
-        title: 'Track savings',
-        text: 'See how much you’ve saved over time — keep it motivating',
-        bg: 'bg-orange-50',
     },
 ] as const;
 
 const faqs = [
     {
-        question: 'What is PulseClub?',
-        answer: 'PulseClub is a simple way to get venue discounts. You sign in, scan the venue QR, and redeem your deal',
+        question: 'What is Pulse Club?',
+        answer: 'Pulse Club is a simple way to get venue discounts. You sign in, scan the venue QR, and redeem your deal',
         emoji: '✨',
     },
     {
@@ -53,116 +46,202 @@ const faqs = [
 ] as const;
 
 export default function HomePage() {
-    const {user, bootstrapped} = useAuth();
-    if (!bootstrapped) {
-        return (
-            <div className="mx-auto max-w-5xl px-4 py-12">
-                <div className="rounded-2xl border bg-white p-5 text-sm text-gray-600">Loading…</div>
-            </div>
-        );
-    }
+    const {user} = useAuth();
 
-    if (user) return <DashboardPage />;
+    if (user) return <Navigate to="/dashboard" replace />;
 
     return (
-        <div className="bg-gray-50">
-            {/* HERO */}
-            <div className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
-                <div className="space-y-6 text-center max-w-3xl mx-auto">
-                    <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
-                        <span className="relative inline-block">
-                            <span className="absolute -inset-2 rounded-2xl bg-linear-to-r from-slate-900/15 via-indigo-700/15 to-violet-700/15 blur-xl animate-pulse" />
-                            <span className="relative bg-linear-to-r from-slate-900 via-indigo-700 to-violet-700 bg-clip-text text-transparent">
-                                Save money at local venues
-                                <br />
-                                with a quick QR scan
-                            </span>
-                        </span>
+        <div className="min-h-screen antialiased">
+            <div className="space-y-24">
+                {/* Hero */}
+                <section className="px-6 py-20 max-w-4xl mx-auto text-center">
+                    <div className="inline-block px-4 py-1 mb-6 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 text-xs font-bold uppercase tracking-widest animate-pulse">
+                        Soft Launch: 90 Days Free
+                    </div>
+
+                    <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-tight mb-6">
+                        Your city, <br />
+                        <span className="text-green-500">better price.</span>
                     </h1>
 
-                    <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-                        PulseClub is built for real life in New Zealand: authentic venues, simple discounts, and a clean
-                        experience. Sign in, scan a venue QR, redeem your deal — done.
+                    <p className="text-lg md:text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
+                        Welly is getting expensive, so we’re making it easier to handle. Join our Soft Launch and get{' '}
+                        <span className="text-white font-bold">3 months of member rates for FREE</span>. No credit card
+                        needed. Just scan the Puls e QR at the counter of independent local spots and pay less for your
+                        daily coffee, lunch, or pint
                     </p>
 
-                    <div className="grid gap-3 sm:grid-cols-2 sm:max-w-md mx-auto">
-                        <Link
-                            to="/login"
-                            className="w-full rounded-2xl bg-indigo-600 px-4 py-3 text-center font-semibold text-white
-             shadow-sm transition
-             hover:bg-indigo-700
-             focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                            Sign in
-                        </Link>
-                        <Link
-                            to="/register"
-                            className="w-full rounded-2xl border bg-white px-4 py-3 text-center font-medium hover:bg-gray-50">
-                            Create account
-                        </Link>
+                    <div className="flex flex-col items-center space-y-4">
+                        <a
+                            href="/login"
+                            className="w-full md:w-auto px-10 py-5 bg-green-500 hover:bg-green-400 text-slate-950 font-extrabold text-xl rounded-xl transition-all transform hover:scale-105 neon-glow uppercase tracking-tight text-center">
+                            Claim My Free 90 Days
+                        </a>
+
+                        <p className="text-xs text-slate-500 flex items-center">
+                            <svg className="w-3 h-3 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    fillRule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+                            No credit card required. Setup takes 30 seconds.
+                        </p>
                     </div>
-                </div>
-            </div>
-            {/* WHY */}
-            <div className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
-                <div className="text-center mb-8">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Why PulseClub?</h2>
-                    <p className="text-gray-600 max-w-2xl mx-auto">
-                        We’re making discounts simple, authentic, and easy to use on your phone.
-                    </p>
-                </div>
+                </section>
 
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    {features.map((f) => (
-                        <div
-                            key={f.title}
-                            className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
-                            <div
-                                className={`w-12 h-12 ${f.bg} rounded-full flex items-center justify-center mb-4 mx-auto`}>
-                                <span className="text-2xl">{f.emoji}</span>
-                            </div>
-                            <h3 className="text-base font-semibold text-gray-900 mb-2">{f.title}</h3>
-                            <p className="text-gray-600 text-sm">{f.text}</p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-            {/* FAQ */}
-            <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
-                <div className="text-center mb-8">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Frequently Asked Questions</h2>
-                    <p className="text-gray-600 mt-2">Quick answers before you start</p>
-                </div>
+                {/* WHY */}
+                <section className="bg-slate-800/30 border-y border-slate-800 px-6 py-20">
+                    <h2 className="text-3xl font-black text-center uppercase tracking-tighter">WHY PULSE CLUB?</h2>
+                    <p className="text-slate-400 text-center mt-4 mb-12">Four reasons people stick with it</p>
 
-                <div className="space-y-3">
-                    {faqs.map((item) => (
-                        <details key={item.question} className="bg-white rounded-2xl shadow-sm border border-gray-200">
-                            <summary className="cursor-pointer select-none px-5 py-4 flex items-center justify-between gap-3">
-                                <div className="flex items-center gap-3">
-                                    <span className="text-xl">{item.emoji}</span>
-                                    <span className="font-medium text-gray-900">{item.question}</span>
+                    <div className="max-w-6xl mx-auto grid md:grid-cols-1 gap-12 items-center">
+                        <div className="grid md:grid-cols-3 gap-12">
+                            {features.map((f) => (
+                                <div
+                                    key={f.title}
+                                    className="bg-slate-900 p-8 rounded-3xl border border-slate-700 shadow-2xl">
+                                    <div className="w-12 h-12 bg-slate-300/10 rounded-full flex items-center justify-center mb-6 mx-auto">
+                                        <span className="text-2xl">{f.emoji}</span>
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-3 text-white text-center">{f.title}</h3>
+                                    <p className="text-slate-400 leading-relaxed text-center">{f.text}</p>
                                 </div>
-                                <span className="text-gray-500">⌄</span>
-                            </summary>
-                            <div className="px-5 pb-4 text-gray-600 text-sm leading-relaxed">{item.answer}</div>
-                        </details>
-                    ))}
-                </div>
-            </div>
-            {/* CTA */}
-            <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16 text-center space-y-4">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Ready to start saving with PulseClub?</h2>
-                <p className="text-gray-600">Create an account, find a venue, scan the QR, and redeem your discount.</p>
+                            ))}
+                        </div>
+                    </div>
+                </section>
 
-                <div className="grid gap-3 sm:grid-cols-2">
-                    <Link
-                        to="/register"
-                        className="rounded-2xl bg-indigo-600 text-white px-5 py-3 font-medium hover:opacity-95">
-                        Create account
-                    </Link>
-                    <Link to="/login" className="rounded-2xl border bg-white px-5 py-3 font-medium hover:bg-gray-50">
-                        Sign in
-                    </Link>
-                </div>
+                {/* How it works */}
+                <section className="px-6 py-20 max-w-6xl mx-auto">
+                    <h2 className="text-3xl font-black mb-16 text-center uppercase tracking-tighter">
+                        CBD Living, Simplified
+                    </h2>
+
+                    <div className="grid md:grid-cols-3 gap-12">
+                        <div className="relative">
+                            <div className="step-number mono font-bold mb-4">01</div>
+                            <h3 className="text-xl font-bold mb-3">Get the Pass</h3>
+                            <p className="text-slate-400 leading-relaxed">
+                                Sign up in seconds. No payment info required during Soft Launch.
+                            </p>
+                        </div>
+
+                        <div className="relative">
+                            <div className="step-number mono font-bold mb-4">02</div>
+                            <h3 className="text-xl font-bold mb-3 text-green-500">Find the QR</h3>
+                            <p className="text-slate-400 leading-relaxed">
+                                Look for the Pulse QR at the counter of your favorite independent cafes and bars.
+                            </p>
+                        </div>
+
+                        <div className="relative">
+                            <div className="step-number mono font-bold mb-4">03</div>
+                            <h3 className="text-xl font-bold mb-3">Pay the Local Guys</h3>
+                            <p className="text-slate-400 leading-relaxed">
+                                Scan to verify your membership and pay the member price{' '}
+                                <span className="text-white font-semibold">directly to the venue</span>. We don't touch
+                                your money.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Value props */}
+                <section className="bg-slate-800/30 border-y border-slate-800 px-6 py-20">
+                    <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h2 className="text-4xl font-black mb-8 leading-tight">
+                                Member rates, <br /> No fuss.
+                            </h2>
+
+                            <div className="space-y-6">
+                                <div className="flex items-start">
+                                    <div className="mt-1 mr-4 text-green-500 font-bold mono">/01</div>
+                                    <div>
+                                        <h4 className="font-bold mb-1">Supporting Independent Spots</h4>
+                                        <p className="text-slate-400">
+                                            We partner with local cafes and bars you actually visit. No corporate
+                                            chains, no middlemen.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start">
+                                    <div className="mt-1 mr-4 text-green-500 font-bold mono">/02</div>
+                                    <div>
+                                        <h4 className="font-bold mb-1">The Real Math</h4>
+                                        <p className="text-slate-400">
+                                            Track your savings in real-time. Use it twice a week, and the pass pays for
+                                            itself several times over.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-slate-900 p-8 rounded-3xl border border-slate-700 shadow-2xl">
+                            <div className="flex justify-between items-center mb-6">
+                                <span className="mono text-xs text-slate-500 uppercase">Your personal Dashboard</span>
+                                <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="text-sm text-slate-400">Saved this month:</div>
+                                <div className="text-5xl font-black mono text-green-400">$24.50</div>
+                                <div className="h-1 w-full bg-slate-800 rounded-full mt-6">
+                                    <div className="w-3/4 h-full bg-green-500" />
+                                </div>
+                                <p className="text-xs text-slate-500 italic mt-4">Calculated from 8 scan's.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* FAQ */}
+                <section className="px-6 py-20 max-w-6xl mx-auto">
+                    <h2 className="text-3xl font-black text-center uppercase tracking-tighter">
+                        Frequently Asked Questions
+                    </h2>
+                    <p className="text-slate-400 text-center mt-4 mb-12">Quick answers before you start</p>
+
+                    <div className="space-y-4">
+                        {faqs.map((item) => (
+                            <details
+                                key={item.question}
+                                className="rounded-2xl border border-slate-700 bg-slate-900/40">
+                                <summary className="cursor-pointer select-none px-6 py-5 flex items-center justify-between gap-3">
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-xl">{item.emoji}</span>
+                                        <span className="font-semibold text-white">{item.question}</span>
+                                    </div>
+                                    <span className="text-slate-500">⌄</span>
+                                </summary>
+                                <div className="px-6 pb-5 text-slate-400 text-sm leading-relaxed">{item.answer}</div>
+                            </details>
+                        ))}
+                    </div>
+                </section>
+
+                {/* Footer */}
+                {/* <footer className="px-6 py-20 border-t border-slate-800 text-center">
+                    <h2 className="text-4xl font-black mb-6">Ready to stop overpaying?</h2>
+                    <p className="text-slate-400 mb-10 max-w-md mx-auto">
+                        Secure one of the remaining Founding Member spots and get 3 months free. Join Welly&apos;s
+                        smartest club.
+                    </p>
+
+                    <a
+                        href="/signup"
+                        className="w-full md:w-auto inline-block px-12 py-5 bg-white text-slate-950 font-black text-xl rounded-xl hover:bg-slate-200 transition-all uppercase tracking-tight">
+                        Get My Free Pass
+                    </a>
+
+                    <div className="mt-16 text-slate-600 text-xs mono">
+                        Pulse Club © 2026 | Built for Welly, by Welly
+                    </div>
+                </footer> */}
             </div>
         </div>
     );

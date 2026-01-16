@@ -1,14 +1,24 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {QRCodeCanvas} from 'qrcode.react';
-import {apiPost} from '../auth/api';
+import {apiGet, apiPost} from '../auth/api';
 
 type QrResponse = {challenge: string; expiresInSec: number};
+type VenueResponse = {id: string; name: string};
+
+function Spinner() {
+    return <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white" />;
+}
 
 export default function VenueQrPage() {
     const {id} = useParams();
+    const [venueName, setVenueName] = useState<string | null>(null);
     const [challenge, setChallenge] = useState<string | null>(null);
     const [err, setErr] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [nextRefreshAt, setNextRefreshAt] = useState<number | null>(null);
+    const [now, setNow] = useState(Date.now());
+    const timerRef = useRef<number | null>(null);
 
     const redeemUrl = useMemo(() => {
         if (!challenge) return null;
@@ -16,49 +26,135 @@ export default function VenueQrPage() {
         return `${base}/redeem?c=${encodeURIComponent(challenge)}`;
     }, [challenge]);
 
+    const scheduleRefresh = (ms: number) => {
+        if (timerRef.current) window.clearTimeout(timerRef.current);
+        timerRef.current = window.setTimeout(() => void load(), ms);
+        setNextRefreshAt(Date.now() + ms);
+    };
+
+    const load = async () => {
+        if (!id) return;
+
+        setLoading(true);
+        setErr(null);
+
+        try {
+            const res = await apiPost<QrResponse>(`/venues/${id}/qr`, {});
+            setChallenge(res.challenge);
+
+            const ms = Math.max(10_000, (res.expiresInSec - 10) * 1000);
+            scheduleRefresh(ms);
+        } catch (e) {
+            setErr(e instanceof Error ? e.message : 'Failed to generate QR');
+            scheduleRefresh(10_000);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const loadVenue = async () => {
+        if (!id) return;
+        try {
+            const v = await apiGet<VenueResponse>(`/venues/${id}`);
+            setVenueName(v.name);
+        } catch (e) {
+            setErr(e instanceof Error ? e.message : 'Failed loading Venue name');
+            setVenueName(null);
+        }
+    };
+
     useEffect(() => {
-        let t: number | undefined;
-
-        const load = async () => {
-            if (!id) return;
-            try {
-                setErr(null);
-                const res = await apiPost<QrResponse>(`/venues/${id}/qr`, {});
-                setChallenge(res.challenge);
-
-                t = window.setTimeout(load, Math.max(10_000, (res.expiresInSec - 10) * 1000));
-            } catch (e) {
-                setErr(e instanceof Error ? e.message : 'Failed to generate QR');
-                t = window.setTimeout(load, 10_000);
-            }
-        };
-
+        void loadVenue();
         void load();
-
         return () => {
-            if (t) window.clearTimeout(t);
+            if (timerRef.current) window.clearTimeout(timerRef.current);
         };
     }, [id]);
 
+    useEffect(() => {
+        const i = window.setInterval(() => {
+            setNow(Date.now());
+        }, 1000);
+
+        return () => window.clearInterval(i);
+    }, []);
+
+    const secondsLeft = useMemo(() => {
+        if (!nextRefreshAt) return null;
+        return Math.max(0, Math.ceil((nextRefreshAt - now) / 1000));
+    }, [nextRefreshAt, now]);
+
     return (
-        <div className="min-h-screen p-6 flex items-center justify-center">
-            <div className="w-full max-w-md rounded-2xl border bg-white p-6 text-center">
-                <h1 className="text-2xl font-semibold">Venue QR</h1>
-                <p className="mt-2 text-sm text-gray-600">This code refreshes automatically.</p>
+        <div className="min-h-screen bg-slate-900 text-slate-100 antialiased">
+            <div className="mx-auto max-w-6xl px-6 py-10">
+                <div className="mx-auto w-full max-w-md overflow-hidden rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
+                    <div className="h-1 w-full bg-green-500" />
 
-                {err && <div className="mt-3 text-sm text-red-600">{err}</div>}
+                    <div className="p-8 text-center">
+                        <div className="mono text-xs uppercase tracking-widest text-slate-500">Venue tool</div>
 
-                <div className="mt-6 flex justify-center">
-                    {redeemUrl ? (
-                        <div className="rounded-2xl border p-4">
-                            <QRCodeCanvas value={redeemUrl} size={240} />
+                        <h1 className="mt-3 text-3xl font-black tracking-tight">
+                            {venueName ? (
+                                <>
+                                    {venueName} <span className="text-green-500">QR</span>
+                                </>
+                            ) : (
+                                <>
+                                    Venue <span className="text-green-500">QR</span>
+                                </>
+                            )}
+                        </h1>
+
+                        <p className="mt-3 text-sm text-slate-400 leading-relaxed">
+                            This code refreshes automatically. Keep this screen open on the venue device.
+                        </p>
+
+                        {/* status pill */}
+                        <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800/30 px-3 py-1 text-xs text-slate-300">
+                            {loading ? (
+                                <>
+                                    <Spinner />
+                                    Generating…
+                                </>
+                            ) : secondsLeft !== null ? (
+                                <>
+                                    <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                                    Refresh in {secondsLeft}s
+                                </>
+                            ) : (
+                                <>
+                                    <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
+                                    Ready
+                                </>
+                            )}
                         </div>
-                    ) : (
-                        <div>Loading QR…</div>
-                    )}
-                </div>
 
-                {/* {redeemUrl && <div className="mt-4 text-xs text-gray-500 break-all">{redeemUrl}</div>} */}
+                        {err ? (
+                            <div className="mt-5 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200 text-left">
+                                {err}
+                            </div>
+                        ) : null}
+
+                        <div className="mt-8 flex justify-center">
+                            {redeemUrl ? (
+                                <div className="rounded-3xl border border-slate-700 bg-slate-950/40 p-4">
+                                    <div className="rounded-2xl bg-white p-3">
+                                        <QRCodeCanvas value={redeemUrl} size={240} />
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="rounded-2xl border border-slate-700 bg-slate-800/30 px-5 py-4 text-sm text-slate-300">
+                                    Loading QR…
+                                </div>
+                            )}
+                        </div>
+
+                        {/* optional: show url for debugging */}
+                        {/* {redeemUrl ? (
+                            <div className="mt-5 text-xs text-slate-500 break-all">{redeemUrl}</div>
+                        ) : null} */}
+                    </div>
+                </div>
             </div>
         </div>
     );

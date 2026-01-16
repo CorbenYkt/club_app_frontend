@@ -20,7 +20,7 @@ export default function LogoutPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
-            <div className="text-sm text-gray-600">Signing out…</div>
+            <div className="text-sm text-white">Signing out…</div>
         </div>
     );
 }

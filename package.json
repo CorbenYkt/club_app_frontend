@@ -1,11 +1,11 @@
 {
   "name": "club-app-frontend",
-  "homepage": "https://corbenykt.github.io/club_app_frontend/",
+  "homepage": "https://pulseclub.co.nz",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "ENV_FILE=.env.local vite --host",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

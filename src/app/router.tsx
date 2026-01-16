@@ -1,4 +1,4 @@
-import {createBrowserRouter} from 'react-router-dom';
+import {createHashRouter} from 'react-router-dom';
 import {ProtectedRoute} from '../auth/ProtectedRoute';
 import ForgotPasswordPage from '../auth/pages/ForgotPasswordPage';
 import LoginPage from '../auth/pages/LoginPage';
@@ -10,14 +10,18 @@ import VenueQrPage from '../pages/VenueQrPage';
 import RegisterPage from '../pages/RegisterPage';
 import RootLayout from '../layouts/RootLayout';
 import LogoutPage from '../auth/pages/LogoutPage';
-import {NotFound} from '../auth/pages/NotFound';
+// import {NotFound} from '../auth/pages/NotFound';
 import DashboardPage from '../auth/pages/Dashboard';
 import ScanPage from '../auth/pages/ScanPage';
+import {DebugError} from '../auth/pages/DebugError';
+import {Renew} from '../auth/pages/Renew';
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
     {
         element: <RootLayout />,
-        errorElement: <NotFound />,
+        // errorElement: <NotFound />,
+        errorElement: <DebugError />,
+
         children: [
             {path: '/login', element: <LoginPage />},
             {
@@ -75,9 +79,14 @@ export const router = createBrowserRouter([
                 ),
             },
             {
-                path: '*',
-                element: <NotFound />,
+                path: '/renew',
+                element: <Renew />,
             },
+
+            // {
+            //     path: '*',
+            //     element: <NotFound />,
+            // },
         ],
     },
 ]);

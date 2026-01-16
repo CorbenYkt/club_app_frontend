@@ -19,13 +19,13 @@ export default function RegisterPage() {
 
     const passwordError = useMemo(() => {
         if (!password) return null;
-        if (password.length < 8) return 'Password must be at least 8 characters.';
+        if (password.length < 8) return 'Password must be at least 8 characters';
         return null;
     }, [password]);
 
     const confirmError = useMemo(() => {
         if (!confirm) return null;
-        if (password !== confirm) return 'Passwords do not match.';
+        if (password !== confirm) return 'Passwords do not match';
         return null;
     }, [password, confirm]);
 
@@ -33,20 +33,11 @@ export default function RegisterPage() {
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (loading) return;
+        if (!canSubmit) return;
 
         setErr(null);
-
-        if (passwordError) {
-            setErr(passwordError);
-            return;
-        }
-        if (confirmError) {
-            setErr(confirmError);
-            return;
-        }
-
         setLoading(true);
+
         try {
             const session = await apiPost<AuthResponse>('/auth/register', {email, password});
             setSession(session);
@@ -58,63 +49,67 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4">
-            <div className="relative w-full max-w-sm rounded-2xl shadow p-6 bg-white">
+        <div className="min-h-screen flex items-center justify-center px-4 bg-slate-900 antialiased">
+            <div className="relative w-full max-w-sm rounded-3xl border border-slate-700 bg-slate-900 p-8 shadow-2xl">
+                {/* Loading overlay */}
                 {loading && (
-                    <div className="absolute inset-0 z-10 rounded-2xl bg-white/70 backdrop-blur-sm flex items-center justify-center">
-                        <div className="flex items-center gap-3 rounded-xl border bg-white px-4 py-3 shadow-sm">
-                            <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-gray-900" />
-                            <span className="text-sm text-gray-700">Creating account…</span>
+                    <div className="absolute inset-0 z-10 rounded-3xl bg-slate-900/70 backdrop-blur-sm flex items-center justify-center">
+                        <div className="flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-800 px-4 py-3">
+                            <Spinner />
+                            <span className="text-sm text-slate-200">Creating account…</span>
                         </div>
                     </div>
                 )}
 
-                <h1 className="text-2xl font-semibold">Create account</h1>
+                <h1 className="text-2xl font-black tracking-tight mb-1">Create your account</h1>
+                <p className="text-sm text-slate-400 mb-6">Join Pulse and start saving at local venues</p>
 
-                <form onSubmit={onSubmit} className="mt-4 space-y-3">
+                <form onSubmit={onSubmit} className="space-y-4">
                     <input
-                        className="w-full rounded-xl border p-3 disabled:opacity-60"
+                        className="w-full rounded-xl border border-slate-700 bg-slate-800 p-3 text-slate-100 placeholder-slate-500 focus:border-green-500 focus:outline-none"
                         placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         type="email"
-                        required
                         autoComplete="email"
                         disabled={loading}
+                        required
                     />
 
                     <div className="space-y-1">
                         <input
-                            className="w-full rounded-xl border p-3 disabled:opacity-60"
-                            placeholder="Password (min 8 chars)"
+                            className="w-full rounded-xl border border-slate-700 bg-slate-800 p-3 text-slate-100 placeholder-slate-500 focus:border-green-500 focus:outline-none"
+                            placeholder="Password (min 8 characters)"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             type="password"
-                            required
                             autoComplete="new-password"
                             disabled={loading}
+                            required
                         />
-                        {passwordError && <div className="text-xs text-gray-500">{passwordError}</div>}
+                        {passwordError && <div className="text-xs text-red-400">{passwordError}</div>}
                     </div>
 
                     <div className="space-y-1">
                         <input
-                            className="w-full rounded-xl border p-3 disabled:opacity-60"
+                            className="w-full rounded-xl border border-slate-700 bg-slate-800 p-3 text-slate-100 placeholder-slate-500 focus:border-green-500 focus:outline-none"
                             placeholder="Confirm password"
                             value={confirm}
                             onChange={(e) => setConfirm(e.target.value)}
                             type="password"
-                            required
                             autoComplete="new-password"
                             disabled={loading}
+                            required
                         />
-                        {confirmError && <div className="text-xs text-gray-500">{confirmError}</div>}
+                        {confirmError && <div className="text-xs text-red-400">{confirmError}</div>}
                     </div>
 
-                    {err && <div className="text-sm text-red-600">{err}</div>}
+                    {err && <div className="text-sm text-red-400">{err}</div>}
+
                     <button
-                        className="w-full rounded-2xl bg-indigo-600 text-white p-3 disabled:opacity-50 inline-flex items-center justify-center gap-2 cursor-pointer"
-                        disabled={!canSubmit}>
+                        type="submit"
+                        disabled={!canSubmit}
+                        className="w-full rounded-2xl bg-green-500 px-4 py-3 font-extrabold text-slate-950 transition hover:bg-green-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                         {loading ? (
                             <>
                                 <Spinner /> Creating…
@@ -124,19 +119,19 @@ export default function RegisterPage() {
                         )}
                     </button>
                 </form>
-                <div className="mt-3 grid gap-2">
+
+                <div className="mt-6 grid gap-3">
                     <Link
                         to="/login"
-                        className={`w-full rounded-xl border p-3 text-center hover:bg-gray-50 ${
-                            loading ? 'pointer-events-none opacity-60' : ''
-                        }`}>
-                        Sign in
+                        className="w-full rounded-xl border border-slate-700 p-3 text-center text-slate-200 hover:bg-slate-800 transition">
+                        Already have an account? Sign in
                     </Link>
                 </div>
-                <div className="mt-4 text-xs text-gray-500">
-                    Need help? Contact{' '}
-                    <a className="underline" href="mailto:support@pulseclub.co.nz">
-                        support@pulseclub.co.nz
+
+                <div className="mt-6 text-xs text-slate-500 text-center">
+                    Need help?{' '}
+                    <a className="underline hover:text-green-400" href="mailto:pulseclubnz@gmail.com">
+                        pulseclubnz@gmail.com
                     </a>
                 </div>
             </div>

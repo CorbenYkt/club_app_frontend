@@ -5,6 +5,19 @@ import {VitePWA} from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
 export default defineConfig({
+    server: {
+        proxy: {
+            '/auth': 'http://localhost:4000',
+            '/venues': 'http://localhost:4000',
+            '/redeem': 'http://localhost:4000',
+            '/admin': 'http://localhost:4000',
+            '/subscription': 'http://localhost:4000',
+            '/health': 'http://localhost:4000',
+            '/summary': 'http://localhost:4000',
+            '/recent': 'http://localhost:4000',
+        },
+    },
+
     base: '/',
     plugins: [
         react(),
@@ -15,8 +28,8 @@ export default defineConfig({
                 name: 'Pulse Club',
                 short_name: 'Pulse Club',
                 description: 'Members-only discounts for coffee, food & drinks',
-                theme_color: '#000000',
-                background_color: '#ffffff',
+                // theme_color: '#000000',
+                // background_color: '#ffffff',
                 display: 'standalone',
                 start_url: '/',
                 icons: [
@@ -26,14 +39,4 @@ export default defineConfig({
             },
         }),
     ],
-    server: {
-        proxy: {
-            '/api': {
-                target: 'https://api.pulseclub.co.nz',
-                changeOrigin: true,
-                secure: true,
-                rewrite: (path) => path.replace(/^\/api/, ''),
-            },
-        },
-    },
 });

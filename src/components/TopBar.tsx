@@ -21,46 +21,44 @@ export default function TopBar() {
     };
 
     return (
-        <div className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur">
-            <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between">
-                <Link
-                    to="/"
-                    className="text-3xl font-semibold bg-linear-to-r from-slate-900 via-indigo-700 to-violet-700 bg-clip-text text-transparent tracking-tight    ">
-                    PulseClub
-                </Link>
+        <nav className="flex items-center justify-between px-6 py-6 max-w-6xl mx-auto w-full">
+            <Link to="/">
+                <span className="inline-flex items-baseline gap-1 text-2xl font-extrabold tracking-tighter italic">
+                    <span>PULSE</span>
+                    <span className="w-3 h-3 rounded-full bg-green-500 animate-pulse translate-y-1" />
+                </span>
+            </Link>
 
-                <div className="flex items-center gap-3 text-sm">
-                    {!bootstrapped ? (
-                        <div className="text-gray-500">Loading…</div>
-                    ) : user ? (
-                        <>
-                            <div className="text-gray-700">
-                                <Link to="/dashboard">
-                                    <span className="font-medium">{displayUser(user)}</span>
+            <div>
+                {!bootstrapped ? (
+                    <div className="text-white">Loading…</div>
+                ) : user ? (
+                    <>
+                        <div className="flex items-center text-white gap-10">
+                            <div className="truncate text-sm font-extrabold text-slate-100">
+                                <Link to="/dashboard" className="underline">
+                                    {displayUser(user)}
                                 </Link>
                             </div>
                             <button
                                 onClick={onLogout}
-                                className="rounded-xl border px-3 py-1.5 hover:bg-gray-50 cursor-pointer">
+                                className="rounded-xl border border-slate-700 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-800/50">
                                 Logout
                             </button>
-                        </>
-                    ) : (
-                        <div>
-                            <Link
-                                className="w-full rounded-2xl bg-indigo-600 mx-1 px-4 py-3 text-center font-semibold text-white shadow-sm transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer"
-                                to="/login">
-                                Login
-                            </Link>
-                            <Link
-                                className="w-full rounded-2xl mx-4 px-4 py-3 text-center font-semibold text-indigo-600 shadow-sm transition  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 cursor-pointer"
-                                to="/register">
-                                Register
-                            </Link>
                         </div>
-                    )}
-                </div>
+                    </>
+                ) : (
+                    <div className="flex items-center gap-6">
+                        <Link className="text-sm font-semibold hover:text-green-500 transition-colors" to="/login">
+                            Member Login
+                        </Link>
+
+                        <Link className="text-sm font-semibold hover:text-green-500 transition-colors" to="/register">
+                            Register
+                        </Link>
+                    </div>
+                )}
             </div>
-        </div>
+        </nav>
     );
 }

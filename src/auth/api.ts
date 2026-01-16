@@ -1,4 +1,13 @@
-const API_BASE = import.meta.env.VITE_API_BASE;
+const RAW = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
+
+const DEFAULT_PROD_API = 'https://api.pulseclub.co.nz';
+const DEFAULT_DEV_API = 'http://localhost:4000';
+
+export const API_BASE = RAW && RAW.length > 0 ? RAW : import.meta.env.PROD ? DEFAULT_PROD_API : DEFAULT_DEV_API;
+
+if (import.meta.env.PROD && (!RAW || RAW.length === 0)) {
+    console.warn(`VITE_API_BASE_URL is missing in PROD build; using default ${DEFAULT_PROD_API}`);
+}
 
 export type AuthResponse = {
     accessToken: string;
@@ -74,10 +83,9 @@ async function request<T>(
         const ct = res.headers.get('content-type') || '';
         if (ct.includes('application/json')) {
             const json = await res.json();
-            throw new Error(json.error || json.message || JSON.stringify(json));
-        } else {
-            throw new Error(`Request failed (${res.status})`);
+            throw new ApiError(res.status, json.message || `Request failed (${res.status})`, json.error);
         }
+        throw new ApiError(res.status, `Request failed (${res.status})`);
     }
 
     const text = await res.text();
@@ -90,4 +98,14 @@ export function apiPost<T>(path: string, body: unknown = {}, accessToken?: strin
 
 export function apiGet<T>(path: string, accessToken?: string) {
     return request<T>('GET', path, undefined, accessToken);
+}
+
+export class ApiError extends Error {
+    status: number;
+    code?: string;
+    constructor(status: number, message: string, code?: string) {
+        super(message);
+        this.status = status;
+        this.code = code;
+    }
 }
