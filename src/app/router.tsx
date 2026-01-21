@@ -15,6 +15,7 @@ import DashboardPage from '../auth/pages/Dashboard';
 import ScanPage from '../auth/pages/ScanPage';
 import {DebugError} from '../auth/pages/DebugError';
 import {Renew} from '../auth/pages/Renew';
+import ApplyVenuePage from '../pages/ApplyVenuePage';
 
 export const router = createHashRouter([
     {
@@ -81,6 +82,10 @@ export const router = createHashRouter([
             {
                 path: '/renew',
                 element: <Renew />,
+            },
+            {
+                path: '/venues/apply',
+                element: <ApplyVenuePage />,
             },
 
             // {

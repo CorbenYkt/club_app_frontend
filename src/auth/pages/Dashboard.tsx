@@ -77,7 +77,7 @@ export default function Dashboard() {
                 setSavedThisMonthCents(0);
                 setRecent([]);
                 setSub(null);
-                setSubError(e instanceof Error ? e.message : 'Failed to load subscription');
+                setSubError(e instanceof Error ? e.message : 'Failed to load membership data');
             } finally {
                 if (alive) {
                     setLoading(false);
@@ -182,7 +182,7 @@ export default function Dashboard() {
                                                 ? 'bg-amber-400 text-slate-950 hover:bg-amber-300'
                                                 : 'bg-green-500 text-slate-950 hover:bg-green-400'
                                         }`}>
-                                        {isExpired ? 'Renew subscription' : 'Scan QR'}
+                                        {isExpired ? 'Renew membership' : 'Scan QR'}
                                     </Link>
 
                                     <div className="pt-1 text-xs text-slate-500">No card needed — just your phone.</div>
@@ -203,7 +203,7 @@ export default function Dashboard() {
                             <div className="flex items-start justify-between gap-4">
                                 <div className="w-full">
                                     <div className="text-xs font-bold uppercase tracking-widest text-slate-500">
-                                        Subscription
+                                        Membership
                                     </div>
 
                                     {subLoading ? (
@@ -215,7 +215,7 @@ export default function Dashboard() {
                                             {subError}
                                         </div>
                                     ) : !sub ? (
-                                        <div className="mt-4 text-sm text-slate-400">No subscription data</div>
+                                        <div className="mt-4 text-sm text-slate-400">No membership data</div>
                                     ) : (
                                         <div className="mt-4">
                                             <div className="flex items-center justify-between">
@@ -223,15 +223,9 @@ export default function Dashboard() {
                                                     {sub.access.kind === 'TRIAL'
                                                         ? 'Free trial'
                                                         : sub.access.kind === 'SUBSCRIPTION'
-                                                          ? 'Subscription'
-                                                          : 'Subscription'}
+                                                          ? 'Membership'
+                                                          : 'Membership'}
                                                 </div>
-
-                                                {/* <Link
-                                                    to="/renew"
-                                                    className="text-sm font-semibold text-slate-200 underline decoration-slate-500 underline-offset-4 hover:text-white">
-                                                    Manage
-                                                </Link> */}
                                             </div>
 
                                             <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800/40 px-3 py-1 text-xs text-slate-300">
@@ -310,13 +304,21 @@ export default function Dashboard() {
                                             </div>
                                         </div>
                                     ))}
-                                    <Link
-                                        to="/venues"
-                                        className="inline-flex w-full items-center justify-center rounded-xl border border-slate-700 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-800/50">
-                                        Venues
-                                    </Link>
                                 </div>
                             )}
+                            <div className="mt-3 grid grid-cols-2 gap-3 items-start">
+                                <Link
+                                    to="/venues"
+                                    className="inline-flex w-full items-center justify-center rounded-xl border border-slate-700 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-800/50">
+                                    Venues
+                                </Link>
+
+                                <Link
+                                    to="/venues"
+                                    className="inline-flex w-full items-center justify-center rounded-xl border border-slate-700 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-800/50">
+                                    Apply as a venue
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>

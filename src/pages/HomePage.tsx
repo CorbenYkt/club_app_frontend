@@ -5,19 +5,19 @@ const features = [
     {
         emoji: '🎯',
         title: 'Member Rates, No Fuss',
-        text: 'Forget coupon shame. You’re a member of the club. Flash your pass, get the insider price, and move on with your day.',
+        text: 'Forget coupon awkwardness. You’re a member of the club. Flash your pass, get the member rate, and get on with your day.',
         bg: 'bg-blue-50',
     },
     {
         emoji: '🛡️',
         title: 'Supporting Independent Spots',
-        text: 'We partner with the local cafes and bars you actually visit in the CBD. No corporate chains, no middlemen. Your money stays with the person making your coffee',
+        text: 'We partner with the independent cafes and bars you already love across the CBD. No corporate chains, no middlemen. Your money stays with the people behind the counter.',
         bg: 'bg-green-50',
     },
     {
         emoji: '🏪',
         title: 'The Real Math',
-        text: 'Watch your savings grow in real-time on your dashboard. If you use it just twice a week, the pass pays for itself several times over',
+        text: 'Watch your savings add up in real time on your dashboard. Use it just twice a week, and the pass pays for itself several times over.',
         bg: 'bg-purple-50',
     },
 ] as const;
@@ -25,12 +25,12 @@ const features = [
 const faqs = [
     {
         question: 'What is Pulse Club?',
-        answer: 'Pulse Club is a simple way to get venue discounts. You sign in, scan the venue QR, and redeem your deal',
+        answer: 'Pulse Club is a simple way to get discounts at participating venues. Sign in, scan the venue QR code, and redeem your deal.',
         emoji: '✨',
     },
     {
         question: 'Do I need a plastic membership card?',
-        answer: 'No. Everything lives in your account. Your phone is all you need',
+        answer: 'No. Everything lives in your account. Your phone is all you need.',
         emoji: '📱',
     },
     {
@@ -40,7 +40,7 @@ const faqs = [
     },
     {
         question: 'How do I redeem a discount?',
-        answer: 'Open the scanner, scan the venue QR code, and follow the on-screen instructions',
+        answer: 'Open the scanner, scan the venue QR code, and follow the on-screen instructions.',
         emoji: '🔎',
     },
 ] as const;
@@ -52,23 +52,24 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen antialiased">
-            <div className="space-y-24">
+            {/* Spacing BETWEEN sections */}
+            <div className="space-y-20">
                 {/* Hero */}
-                <section className="px-6 py-20 max-w-4xl mx-auto text-center">
+                <section className="px-6 pt-20 pb-20 max-w-4xl mx-auto text-center">
                     <div className="inline-block px-4 py-1 mb-6 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 text-xs font-bold uppercase tracking-widest animate-pulse">
                         Soft Launch: 90 Days Free
                     </div>
 
                     <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-tight mb-6">
                         Your city, <br />
-                        <span className="text-green-500">better price.</span>
+                        <span className="text-green-500">better prices.</span>
                     </h1>
 
                     <p className="text-lg md:text-xl text-slate-400 mb-10 leading-relaxed max-w-2xl mx-auto">
-                        Welly is getting expensive, so we’re making it easier to handle. Join our Soft Launch and get{' '}
+                        Living costs are rising, so we’re making it easier to manage. Join our Soft Launch and get{' '}
                         <span className="text-white font-bold">3 months of member rates for FREE</span>. No credit card
-                        needed. Just scan the Puls e QR at the counter of independent local spots and pay less for your
-                        daily coffee, lunch, or pint
+                        needed. Just scan the Pulse QR at the counter of independent local spots and pay less for your
+                        daily coffee, lunch, or pint.
                     </p>
 
                     <div className="flex flex-col items-center space-y-4">
@@ -92,11 +93,11 @@ export default function HomePage() {
                 </section>
 
                 {/* WHY */}
-                <section className="bg-slate-800/30 border-y border-slate-800 px-6 py-20">
-                    <h2 className="text-3xl font-black text-center uppercase tracking-tighter">WHY PULSE CLUB?</h2>
-                    <p className="text-slate-400 text-center mt-4 mb-12">Four reasons people stick with it</p>
+                <section className="bg-slate-800/30 border-y border-slate-800 px-6 pt-20 pb-20">
+                    <h2 className="text-3xl font-black text-center uppercase tracking-tighter mb-4">Why Pulse Club?</h2>
+                    <p className="text-slate-400 text-center mb-12">Three reasons people stick with it.</p>
 
-                    <div className="max-w-6xl mx-auto grid md:grid-cols-1 gap-12 items-center">
+                    <div className="max-w-6xl mx-auto">
                         <div className="grid md:grid-cols-3 gap-12">
                             {features.map((f) => (
                                 <div
@@ -114,17 +115,18 @@ export default function HomePage() {
                 </section>
 
                 {/* How it works */}
-                <section className="px-6 py-20 max-w-6xl mx-auto">
-                    <h2 className="text-3xl font-black mb-16 text-center uppercase tracking-tighter">
+                <section className="px-6 pt-20 pb-20 max-w-6xl mx-auto">
+                    <h2 className="text-3xl font-black text-center uppercase tracking-tighter mb-4">
                         CBD Living, Simplified
                     </h2>
+                    <p className="text-slate-400 text-center mb-12">Three steps to start saving right away.</p>
 
                     <div className="grid md:grid-cols-3 gap-12">
                         <div className="relative">
                             <div className="step-number mono font-bold mb-4">01</div>
                             <h3 className="text-xl font-bold mb-3">Get the Pass</h3>
                             <p className="text-slate-400 leading-relaxed">
-                                Sign up in seconds. No payment info required during Soft Launch.
+                                Sign up in seconds. No payment details required during Soft Launch.
                             </p>
                         </div>
 
@@ -132,16 +134,16 @@ export default function HomePage() {
                             <div className="step-number mono font-bold mb-4">02</div>
                             <h3 className="text-xl font-bold mb-3 text-green-500">Find the QR</h3>
                             <p className="text-slate-400 leading-relaxed">
-                                Look for the Pulse QR at the counter of your favorite independent cafes and bars.
+                                Look for the Pulse QR at the counter of your favourite independent cafes and bars.
                             </p>
                         </div>
 
                         <div className="relative">
                             <div className="step-number mono font-bold mb-4">03</div>
-                            <h3 className="text-xl font-bold mb-3">Pay the Local Guys</h3>
+                            <h3 className="text-xl font-bold mb-3">Pay the Member Price</h3>
                             <p className="text-slate-400 leading-relaxed">
-                                Scan to verify your membership and pay the member price{' '}
-                                <span className="text-white font-semibold">directly to the venue</span>. We don't touch
+                                Scan to verify your membership and pay the member rate{' '}
+                                <span className="text-white font-semibold">directly to the venue</span>. We don’t handle
                                 your money.
                             </p>
                         </div>
@@ -149,11 +151,11 @@ export default function HomePage() {
                 </section>
 
                 {/* Value props */}
-                <section className="bg-slate-800/30 border-y border-slate-800 px-6 py-20">
+                <section className="bg-slate-800/30 border-y border-slate-800 px-6 pt-20 pb-20">
                     <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                         <div>
-                            <h2 className="text-4xl font-black mb-8 leading-tight">
-                                Member rates, <br /> No fuss.
+                            <h2 className="text-4xl font-black leading-tight mb-8">
+                                Member rates, <br /> no fuss.
                             </h2>
 
                             <div className="space-y-6">
@@ -162,7 +164,7 @@ export default function HomePage() {
                                     <div>
                                         <h4 className="font-bold mb-1">Supporting Independent Spots</h4>
                                         <p className="text-slate-400">
-                                            We partner with local cafes and bars you actually visit. No corporate
+                                            We partner with independent cafes and bars you actually visit. No corporate
                                             chains, no middlemen.
                                         </p>
                                     </div>
@@ -173,7 +175,7 @@ export default function HomePage() {
                                     <div>
                                         <h4 className="font-bold mb-1">The Real Math</h4>
                                         <p className="text-slate-400">
-                                            Track your savings in real-time. Use it twice a week, and the pass pays for
+                                            Track your savings in real time. Use it twice a week, and the pass pays for
                                             itself several times over.
                                         </p>
                                     </div>
@@ -183,7 +185,7 @@ export default function HomePage() {
 
                         <div className="bg-slate-900 p-8 rounded-3xl border border-slate-700 shadow-2xl">
                             <div className="flex justify-between items-center mb-6">
-                                <span className="mono text-xs text-slate-500 uppercase">Your personal Dashboard</span>
+                                <span className="mono text-xs text-slate-500 uppercase">Your personal dashboard</span>
                                 <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
                             </div>
 
@@ -193,18 +195,18 @@ export default function HomePage() {
                                 <div className="h-1 w-full bg-slate-800 rounded-full mt-6">
                                     <div className="w-3/4 h-full bg-green-500" />
                                 </div>
-                                <p className="text-xs text-slate-500 italic mt-4">Calculated from 8 scan's.</p>
+                                <p className="text-xs text-slate-500 italic mt-4">Calculated from 8 scans.</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
                 {/* FAQ */}
-                <section className="px-6 py-20 max-w-6xl mx-auto">
-                    <h2 className="text-3xl font-black text-center uppercase tracking-tighter">
+                <section className="px-6 pt-20 pb-20 max-w-6xl mx-auto">
+                    <h2 className="text-3xl font-black text-center uppercase tracking-tighter mb-4">
                         Frequently Asked Questions
                     </h2>
-                    <p className="text-slate-400 text-center mt-4 mb-12">Quick answers before you start</p>
+                    <p className="text-slate-400 text-center mb-12">Quick answers before you start.</p>
 
                     <div className="space-y-4">
                         {faqs.map((item) => (
@@ -223,25 +225,6 @@ export default function HomePage() {
                         ))}
                     </div>
                 </section>
-
-                {/* Footer */}
-                {/* <footer className="px-6 py-20 border-t border-slate-800 text-center">
-                    <h2 className="text-4xl font-black mb-6">Ready to stop overpaying?</h2>
-                    <p className="text-slate-400 mb-10 max-w-md mx-auto">
-                        Secure one of the remaining Founding Member spots and get 3 months free. Join Welly&apos;s
-                        smartest club.
-                    </p>
-
-                    <a
-                        href="/signup"
-                        className="w-full md:w-auto inline-block px-12 py-5 bg-white text-slate-950 font-black text-xl rounded-xl hover:bg-slate-200 transition-all uppercase tracking-tight">
-                        Get My Free Pass
-                    </a>
-
-                    <div className="mt-16 text-slate-600 text-xs mono">
-                        Pulse Club © 2026 | Built for Welly, by Welly
-                    </div>
-                </footer> */}
             </div>
         </div>
     );

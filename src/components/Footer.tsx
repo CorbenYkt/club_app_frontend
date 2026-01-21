@@ -28,6 +28,10 @@ export function Footer() {
                                 </Link>
                             </li>
                             <li>
+                                <Link to="/venues/apply">Apply as a venue</Link>
+                            </li>
+
+                            <li>
                                 <Link to="/dashboard" className="text-slate-300 hover:text-green-500 transition-colors">
                                     Dashboard
                                 </Link>
@@ -51,9 +55,9 @@ export function Footer() {
                         <p className="mt-4 text-sm text-slate-400">
                             Support:{' '}
                             <a
-                                href="mailto:pulseclubnz@gmail.com"
-                                className="text-slate-300 hover:text-green-500 transition-colors">
-                                pulseclubnz@gmail.com
+                                className="text-slate-300 hover:text-green-500 transition-colors"
+                                href="mailto:support@pulseclub.co.nz">
+                                support@pulseclub.co.nz
                             </a>
                         </p>
 
@@ -62,16 +66,18 @@ export function Footer() {
                 </div>
 
                 <div className="mt-12 flex flex-col gap-3 border-t border-slate-800 pt-8 md:flex-row md:items-center md:justify-between">
-                    <div className="text-xs text-slate-600 mono">Pulse Club © 2026 | Built for Welly, by Welly</div>
+                    <div className="text-xs text-slate-600 mono">
+                        Pulse Club © 2026 | Built in New Zealand, for New Zealanders
+                    </div>
 
                     <div className="flex items-center gap-4 text-xs">
                         {/* <Link to="/terms" className="text-slate-500 hover:text-slate-300 transition-colors">Terms</Link>
                         <Link to="/privacy" className="text-slate-500 hover:text-slate-300 transition-colors">Privacy</Link> */}
-                        <a
+                        {/* <a
                             href="mailto:pulseclubnz@gmail.com"
                             className="text-slate-500 hover:text-slate-300 transition-colors">
                             Email support
-                        </a>
+                        </a> */}
                     </div>
                 </div>
             </div>

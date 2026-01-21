@@ -27,7 +27,7 @@ export default defineConfig({
             manifest: {
                 name: 'Pulse Club',
                 short_name: 'Pulse Club',
-                description: 'Members-only discounts for coffee, food & drinks',
+                description: 'Members-only discounts at local venues',
                 // theme_color: '#000000',
                 // background_color: '#ffffff',
                 display: 'standalone',

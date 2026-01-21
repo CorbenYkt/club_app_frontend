@@ -9,7 +9,7 @@ type VerifyResponse =
           venue: {id: string; name: string; city: string | null; address: string | null; discountText: string};
           savedCents?: number;
       }
-    | {approved: false; reason: string};
+    | {approved: false; reason?: string; message?: string};
 
 function getChallengeFromSearchParams(sp: URLSearchParams): string | null {
     const c = sp.get('c');
@@ -45,15 +45,6 @@ function friendlyReason(reason: string) {
                 body: `Reason: ${reason}`,
             };
     }
-}
-
-function Spinner() {
-    return (
-        <span
-            className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white"
-            aria-hidden="true"
-        />
-    );
 }
 
 export default function RedeemPage() {
@@ -104,11 +95,16 @@ export default function RedeemPage() {
                     setVenueName(res.venue.name);
                     setMessage('Approved! Show this screen to the cashier to get the member price.');
                 } else {
-                    setState('denied');
-                    setReason(res.reason);
+                    setReason(res.reason ?? null);
 
-                    const fr = friendlyReason(res.reason);
-                    setMessage(`${fr.title}. ${fr.body}`);
+                    if (res.message) {
+                        setMessage(res.message);
+                    } else if (res.reason) {
+                        const fr = friendlyReason(res.reason);
+                        setMessage(`${fr.title}. ${fr.body}`);
+                    } else {
+                        setMessage('Not approved');
+                    }
                 }
             } catch (e) {
                 if (cancelled) return;
@@ -144,7 +140,6 @@ export default function RedeemPage() {
                                 </h1>
 
                                 <div className="mt-5 inline-flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-800/30 px-4 py-3 text-sm text-slate-200">
-                                    <Spinner />
                                     <span>{message}</span>
                                 </div>
                             </>

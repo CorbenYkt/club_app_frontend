@@ -4,7 +4,7 @@ import {QRCodeCanvas} from 'qrcode.react';
 import {apiGet, apiPost} from '../auth/api';
 
 type QrResponse = {challenge: string; expiresInSec: number};
-type VenueResponse = {id: string; name: string};
+type VenueResponse = {id: string; name: string; city: string; address: string; discountText: string};
 
 function Spinner() {
     return <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white" />;
@@ -13,6 +13,8 @@ function Spinner() {
 export default function VenueQrPage() {
     const {id} = useParams();
     const [venueName, setVenueName] = useState<string | null>(null);
+    const [venueCity, setVenueCity] = useState<string | null>(null);
+    const [venueAddress, setVenueAddress] = useState<string | null>(null);
     const [challenge, setChallenge] = useState<string | null>(null);
     const [err, setErr] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -57,6 +59,8 @@ export default function VenueQrPage() {
         try {
             const v = await apiGet<VenueResponse>(`/venues/${id}`);
             setVenueName(v.name);
+            setVenueCity(v.city);
+            setVenueAddress(v.address);
         } catch (e) {
             setErr(e instanceof Error ? e.message : 'Failed loading Venue name');
             setVenueName(null);
@@ -91,7 +95,7 @@ export default function VenueQrPage() {
                     <div className="h-1 w-full bg-green-500" />
 
                     <div className="p-8 text-center">
-                        <div className="mono text-xs uppercase tracking-widest text-slate-500">Venue tool</div>
+                        <div className="mono text-xs uppercase tracking-widest text-slate-500">Venue</div>
 
                         <h1 className="mt-3 text-3xl font-black tracking-tight">
                             {venueName ? (
@@ -104,6 +108,9 @@ export default function VenueQrPage() {
                                 </>
                             )}
                         </h1>
+                        <p className="mt-3 text-sm font-black tracking-tight">
+                            {[venueCity, venueAddress].filter(Boolean).join(', ')}
+                        </p>
 
                         <p className="mt-3 text-sm text-slate-400 leading-relaxed">
                             This code refreshes automatically. Keep this screen open on the venue device.

@@ -59,8 +59,8 @@ export function NotFound() {
 
                         <div className="mt-8 text-xs text-slate-500">
                             If you believe this is a mistake, contact{' '}
-                            <a href="mailto:pulseclubnz@gmail.com" className="underline hover:text-slate-300">
-                                pulseclubnz@gmail.com{' '}
+                            <a className="underline hover:text-slate-200" href="mailto:support@pulseclub.co.nz">
+                                support@pulseclub.co.nz
                             </a>
                         </div>
                     </div>

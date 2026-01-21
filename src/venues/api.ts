@@ -1,4 +1,4 @@
-import {apiGet} from '../auth/api';
+import {apiGet, apiPost} from '../auth/api';
 
 export type Venue = {
     id: string;
@@ -16,4 +16,16 @@ export async function fetchVenues(params?: {q?: string; active?: boolean}) {
 
     const qs = sp.toString();
     return apiGet<{data: Venue[]}>(`/venues${qs ? `?${qs}` : ''}`);
+}
+export type ApplyVenueBody = {
+    name: string;
+    city?: string;
+    address?: string;
+    discountText: string;
+};
+
+export type ApplyVenueResponse = {ok: true};
+
+export async function applyVenue(body: ApplyVenueBody) {
+    return apiPost<ApplyVenueResponse>('/venues/apply', body);
 }

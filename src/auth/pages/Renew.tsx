@@ -42,7 +42,7 @@ export function Renew() {
                 setStatus(s);
             } catch (e) {
                 if (!alive) return;
-                setError(e instanceof Error ? e.message : 'Failed to load subscription status');
+                setError(e instanceof Error ? e.message : 'Failed to load membership status');
                 setStatus(null);
             } finally {
                 if (alive) setPageLoading(false);
@@ -61,7 +61,7 @@ export function Renew() {
             setStatus((prev) => (prev ? {...prev, access: res.access, subscriptionPlan: res.subscriptionPlan} : prev));
             window.location.assign('/dashboard');
         } catch (e) {
-            setError(e instanceof Error ? e.message : 'Failed to activate subscription');
+            setError(e instanceof Error ? e.message : 'Failed to activate membership');
         } finally {
             setLoading(false);
         }
@@ -74,7 +74,7 @@ export function Renew() {
                 <div className="mb-8">
                     <div className="mono text-xs uppercase tracking-widest text-slate-500">Member area</div>
                     <h1 className="mt-2 text-3xl font-black tracking-tight">
-                        Renew <span className="text-green-500">subscription</span>
+                        Renew <span className="text-green-500">membership</span>
                     </h1>
                     <p className="mt-2 text-sm text-slate-400">Activate your monthly plan to keep redeeming deals.</p>
                 </div>
@@ -88,14 +88,14 @@ export function Renew() {
                     <div className="p-6">
                         {pageLoading ? (
                             <div className="inline-flex items-center gap-2 text-sm text-slate-400">
-                                <Spinner /> Loading subscription…
+                                <Spinner /> Loading membership data
                             </div>
                         ) : error ? (
                             <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
                                 {error}
                             </div>
                         ) : !status ? (
-                            <div className="text-sm text-slate-400">No subscription data.</div>
+                            <div className="text-sm text-slate-400">No membership data.</div>
                         ) : (
                             <>
                                 <div className="flex items-start justify-between gap-4">
@@ -124,7 +124,7 @@ export function Renew() {
 
                                         {status.access.kind === 'EXPIRED' ? (
                                             <div className="mt-4 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
-                                                Your access has expired. Activate a monthly subscription to continue.
+                                                Your access has expired. Activate a membership to continue.
                                             </div>
                                         ) : (
                                             <div className="mt-4 text-sm text-slate-300">

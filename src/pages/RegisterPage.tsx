@@ -130,8 +130,8 @@ export default function RegisterPage() {
 
                 <div className="mt-6 text-xs text-slate-500 text-center">
                     Need help?{' '}
-                    <a className="underline hover:text-green-400" href="mailto:pulseclubnz@gmail.com">
-                        pulseclubnz@gmail.com
+                    <a className="underline hover:text-green-400" href="mailto:support@pulseclub.co.nz">
+                        support@pulseclub.co.nz
                     </a>
                 </div>
             </div>
