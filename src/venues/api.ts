@@ -1,4 +1,4 @@
-import {apiGet, apiPost} from '../auth/api';
+import {apiGet, apiPost} from '../auth/appApi';
 
 export type Venue = {
     id: string;

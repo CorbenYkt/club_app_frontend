@@ -1,16 +1,7 @@
 import {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
-import {ApiError} from '../auth/api';
 import {applyVenue, type ApplyVenueBody} from '../venues/api';
-
-export function Spinner() {
-    return (
-        <span
-            className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white"
-            aria-hidden="true"
-        />
-    );
-}
+import {Spinner} from '../components/Spinner';
 
 export default function ApplyVenuePage() {
     const nav = useNavigate();
@@ -24,8 +15,7 @@ export default function ApplyVenuePage() {
     const [ok, setOk] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const hasResult = ok || err !== null;
-
+    const hasResult = ok;
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (loading) return;
@@ -62,23 +52,6 @@ export default function ApplyVenuePage() {
             setAddress('');
             setDiscountText('');
         } catch (e) {
-            if (e instanceof ApiError) {
-                if (e.status === 409 && e.code === 'VENUE_ALREADY_EXISTS') {
-                    setErr('A venue with this name already exists. If this is your venue, please contact support.');
-                    return;
-                }
-                if (e.status === 409 && e.code === 'APPLICATION_ALREADY_EXISTS') {
-                    setErr('You already have a pending application for this venue. We’ll get back to you soon.');
-                    return;
-                }
-                if (e.status === 401) {
-                    setErr('Please sign in to submit an application.');
-                    return;
-                }
-                setErr(e.message || 'Request failed');
-                return;
-            }
-
             setErr(e instanceof Error ? e.message : 'Request failed');
         } finally {
             setLoading(false);
@@ -88,11 +61,9 @@ export default function ApplyVenuePage() {
     return (
         <div className="min-h-screen bg-slate-900 text-slate-50 antialiased flex items-center justify-center px-6 py-12">
             <div className="relative w-full max-w-md rounded-3xl border border-slate-700 bg-slate-900/60 shadow-2xl overflow-hidden">
-                {/* Green accent */}
                 <div className="h-1 w-full bg-green-500" />
 
                 <div className="p-8">
-                    {/* Top brand */}
                     <div className="mb-8 flex items-center justify-between">
                         <Link to="/" className="text-2xl font-extrabold tracking-tighter italic">
                             PULSE<span className="text-green-500">.</span>
@@ -102,7 +73,6 @@ export default function ApplyVenuePage() {
                         </span>
                     </div>
 
-                    {/* Loading overlay */}
                     {loading && (
                         <div className="absolute inset-0 z-10 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center">
                             <div className="flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-900/80 px-4 py-3 shadow-sm">

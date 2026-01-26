@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import type {SubscriptionStatusResponse} from '../types/subscription';
-import {apiGet} from '../auth/api';
+import {apiGet} from '../auth/appApi';
 
 export function useSubscriptionStatus() {
     const [data, setData] = useState<SubscriptionStatusResponse | null>(null);

@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import type {AuthResponse} from './api';
-import {apiGet, bindAuth} from './api';
+import type {AuthResponse} from './appApi';
+import {apiGet, bindAuth} from './appApi';
 import {AuthContext} from './AuthContext';
 
 export function AuthProvider({children}: {children: React.ReactNode}) {

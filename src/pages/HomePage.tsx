@@ -1,24 +1,21 @@
 import {useAuth} from '../auth/useAuth';
-import {Navigate} from 'react-router-dom';
+import {Link, Navigate} from 'react-router-dom';
 
 const features = [
     {
         emoji: '🎯',
         title: 'Member Rates, No Fuss',
         text: 'Forget coupon awkwardness. You’re a member of the club. Flash your pass, get the member rate, and get on with your day.',
-        bg: 'bg-blue-50',
     },
     {
         emoji: '🛡️',
         title: 'Supporting Independent Spots',
         text: 'We partner with the independent cafes and bars you already love across the CBD. No corporate chains, no middlemen. Your money stays with the people behind the counter.',
-        bg: 'bg-green-50',
     },
     {
         emoji: '🏪',
         title: 'The Real Math',
         text: 'Watch your savings add up in real time on your dashboard. Use it just twice a week, and the pass pays for itself several times over.',
-        bg: 'bg-purple-50',
     },
 ] as const;
 
@@ -35,7 +32,7 @@ const faqs = [
     },
     {
         question: 'Is it free?',
-        answer: 'Yes — it’s free for now. Sign up and start getting discounts right away.',
+        answer: 'Yes — free during Soft Launch (90 days).',
         emoji: '🆓',
     },
     {
@@ -52,9 +49,7 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen antialiased">
-            {/* Spacing BETWEEN sections */}
             <div className="space-y-20">
-                {/* Hero */}
                 <section className="px-6 pt-20 pb-20 max-w-4xl mx-auto text-center">
                     <div className="inline-block px-4 py-1 mb-6 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 text-xs font-bold uppercase tracking-widest animate-pulse">
                         Soft Launch: 90 Days Free
@@ -73,11 +68,11 @@ export default function HomePage() {
                     </p>
 
                     <div className="flex flex-col items-center space-y-4">
-                        <a
-                            href="/login"
+                        <Link
+                            to="/login"
                             className="w-full md:w-auto px-10 py-5 bg-green-500 hover:bg-green-400 text-slate-950 font-extrabold text-xl rounded-xl transition-all transform hover:scale-105 neon-glow uppercase tracking-tight text-center">
                             Claim My Free 90 Days
-                        </a>
+                        </Link>
 
                         <p className="text-xs text-slate-500 flex items-center">
                             <svg className="w-3 h-3 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -91,8 +86,6 @@ export default function HomePage() {
                         </p>
                     </div>
                 </section>
-
-                {/* WHY */}
                 <section className="bg-slate-800/30 border-y border-slate-800 px-6 pt-20 pb-20">
                     <h2 className="text-3xl font-black text-center uppercase tracking-tighter mb-4">Why Pulse Club?</h2>
                     <p className="text-slate-400 text-center mb-12">Three reasons people stick with it.</p>
@@ -113,8 +106,6 @@ export default function HomePage() {
                         </div>
                     </div>
                 </section>
-
-                {/* How it works */}
                 <section className="px-6 pt-20 pb-20 max-w-6xl mx-auto">
                     <h2 className="text-3xl font-black text-center uppercase tracking-tighter mb-4">
                         CBD Living, Simplified
@@ -149,8 +140,6 @@ export default function HomePage() {
                         </div>
                     </div>
                 </section>
-
-                {/* Value props */}
                 <section className="bg-slate-800/30 border-y border-slate-800 px-6 pt-20 pb-20">
                     <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                         <div>
@@ -200,8 +189,6 @@ export default function HomePage() {
                         </div>
                     </div>
                 </section>
-
-                {/* FAQ */}
                 <section className="px-6 pt-20 pb-20 max-w-6xl mx-auto">
                     <h2 className="text-3xl font-black text-center uppercase tracking-tighter mb-4">
                         Frequently Asked Questions
@@ -218,7 +205,7 @@ export default function HomePage() {
                                         <span className="text-xl">{item.emoji}</span>
                                         <span className="font-semibold text-white">{item.question}</span>
                                     </div>
-                                    <span className="text-slate-500">⌄</span>
+                                    <span className="text-slate-500 transition-transform group-open:rotate-180">⌄</span>
                                 </summary>
                                 <div className="px-6 pb-5 text-slate-400 text-sm leading-relaxed">{item.answer}</div>
                             </details>

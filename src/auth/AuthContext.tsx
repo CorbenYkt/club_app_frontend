@@ -1,5 +1,5 @@
 import {createContext} from 'react';
-import type {AuthResponse} from './api';
+import type {AuthResponse} from './appApi';
 
 export type AuthState = {
     user: AuthResponse['user'] | null;

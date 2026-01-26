@@ -2,56 +2,66 @@ import {useEffect, useRef, useState} from 'react';
 import {useNavigate, Link} from 'react-router-dom';
 import {Html5Qrcode} from 'html5-qrcode';
 
-function extractChallenge(qrText: string): string | null {
+type ScanResult = {kind: 'challenge'; challenge: string} | {kind: 'venue'; venueId: string} | {kind: 'unknown'};
+
+function extractScanResult(qrText: string): ScanResult {
     const raw = qrText.trim();
 
     try {
         const u = new URL(raw);
-        const c = u.searchParams.get('c');
-        if (c) return c.trim();
 
-        const token = u.searchParams.get('token');
-        if (token) return token.trim();
+        const c = u.searchParams.get('c')?.trim();
+        if (c) return {kind: 'challenge', challenge: c};
 
-        return null;
+        const token = u.searchParams.get('token')?.trim();
+        if (token) return {kind: 'challenge', challenge: token};
+
+        const venueId = extractVenueIdFromUrl(u);
+        if (venueId) return {kind: 'venue', venueId};
+
+        return {kind: 'unknown'};
     } catch {
-        //void(0)
+        // not a URL, continue
     }
 
     try {
         const qs = raw.startsWith('?') ? raw : `?${raw}`;
         const sp = new URLSearchParams(qs);
 
-        const c = sp.get('c');
-        if (c) return c.trim();
+        const c = sp.get('c')?.trim();
+        if (c) return {kind: 'challenge', challenge: c};
 
-        const token = sp.get('token');
-        if (token) return token.trim();
+        const token = sp.get('token')?.trim();
+        if (token) return {kind: 'challenge', challenge: token};
     } catch {
-        // void(0)
+        // ignore
     }
 
-    if (/^[A-Za-z0-9_-]{16,}$/.test(raw)) return raw;
+    if (/^[A-Za-z0-9_-]{16,}$/.test(raw)) return {kind: 'challenge', challenge: raw};
+
+    return {kind: 'unknown'};
+}
+
+function extractVenueIdFromUrl(u: URL): string | null {
+    const hash = u.hash?.startsWith('#') ? u.hash.slice(1) : '';
+    const candidatePaths: string[] = [];
+
+    if (hash) candidatePaths.push(hash);
+    candidatePaths.push(u.pathname + u.search);
+
+    for (const p of candidatePaths) {
+        const [pathOnly] = p.split('?');
+        const path = pathOnly || '';
+
+        const m = path.match(/^\/venues\/([^/]+)$/);
+        if (!m) continue;
+
+        const id = m[1]?.trim();
+        if (id) return id;
+    }
 
     return null;
 }
-
-// function extractToken(qrText: string): string | null {
-//     const raw = qrText.trim();
-
-//     try {
-//         const u = new URL(raw);
-//         const t = u.searchParams.get('token');
-//         if (t) return t.trim();
-//     } catch {
-//         // not a URL
-//     }
-
-//     if (raw.length >= 16 && !raw.includes(' ')) return raw;
-
-//     const m = raw.match(/token=([^&\s]+)/i);
-//     return m?.[1]?.trim() ?? null;
-// }
 
 export default function ScanPage() {
     const nav = useNavigate();
@@ -74,8 +84,9 @@ export default function ScanPage() {
             async (decodedText) => {
                 if (cancelledRef.current || scannedRef.current) return;
 
-                const challenge = extractChallenge(decodedText);
-                if (!challenge) {
+                const result = extractScanResult(decodedText);
+
+                if (result.kind === 'unknown') {
                     setErr('This QR code is not a Pulse Club code.');
                     return;
                 }
@@ -88,7 +99,12 @@ export default function ScanPage() {
                     console.warn('stopSafely unexpected:', e);
                 }
 
-                nav(`/redeem?c=${encodeURIComponent(challenge)}`, {replace: true});
+                if (result.kind === 'challenge') {
+                    nav(`/redeem?c=${encodeURIComponent(result.challenge)}`, {replace: true});
+                } else {
+                    // venue static QR
+                    nav(`/venues/${encodeURIComponent(result.venueId)}?scan=1`, {replace: true});
+                }
             },
             () => {},
         );
@@ -117,19 +133,6 @@ export default function ScanPage() {
             qrRef.current = null;
 
             void stopSafely(current);
-
-            // if (!current) return;
-
-            // current
-            //     .stop()
-            //     .catch((e) => console.warn('stop() on cleanup ignored:', e))
-            //     .finally(() => {
-            //         try {
-            //             current.clear();
-            //         } catch (e) {
-            //             console.warn('clear() on cleanup ignored:', e);
-            //         }
-            //     });
         };
     }, [nav]);
 
@@ -168,8 +171,8 @@ export default function ScanPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-900 text-slate-100 antialiased">
-            <div className="mx-auto max-w-6xl px-6 py-10">
+        <div className="min-h-dvh bg-slate-900 text-slate-100 antialiased">
+            <div className="mx-auto max-w-6xl px-4 py-4 md:px-6 md:py-10">
                 <div className="mx-auto w-full max-w-md overflow-hidden rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
                     <div className="h-1 w-full bg-green-500" />
 

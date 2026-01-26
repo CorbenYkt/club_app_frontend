@@ -1,14 +1,11 @@
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import {QRCodeCanvas} from 'qrcode.react';
-import {apiGet, apiPost} from '../auth/api';
+import {apiGet, apiPost} from '../auth/appApi';
+import {Spinner} from '../components/Spinner';
 
 type QrResponse = {challenge: string; expiresInSec: number};
 type VenueResponse = {id: string; name: string; city: string; address: string; discountText: string};
-
-function Spinner() {
-    return <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white" />;
-}
 
 export default function VenueQrPage() {
     const {id} = useParams();
@@ -89,8 +86,8 @@ export default function VenueQrPage() {
     }, [nextRefreshAt, now]);
 
     return (
-        <div className="min-h-screen bg-slate-900 text-slate-100 antialiased">
-            <div className="mx-auto max-w-6xl px-6 py-10">
+        <div className="min-h-dvh bg-slate-900 text-slate-100 antialiased">
+            <div className="mx-auto max-w-6xl px-4 py-4 md:px-6 md:py-10">
                 <div className="mx-auto w-full max-w-md overflow-hidden rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
                     <div className="h-1 w-full bg-green-500" />
 
@@ -116,7 +113,6 @@ export default function VenueQrPage() {
                             This code refreshes automatically. Keep this screen open on the venue device.
                         </p>
 
-                        {/* status pill */}
                         <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800/30 px-3 py-1 text-xs text-slate-300">
                             {loading ? (
                                 <>
@@ -155,11 +151,6 @@ export default function VenueQrPage() {
                                 </div>
                             )}
                         </div>
-
-                        {/* optional: show url for debugging */}
-                        {/* {redeemUrl ? (
-                            <div className="mt-5 text-xs text-slate-500 break-all">{redeemUrl}</div>
-                        ) : null} */}
                     </div>
                 </div>
             </div>

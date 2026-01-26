@@ -1,7 +1,7 @@
 import {useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {apiPost} from '../api';
-import {useAuth} from '../useAuth';
+import {apiPost} from '../auth/appApi';
+import {useAuth} from '../auth/useAuth';
 
 export default function LogoutPage() {
     const nav = useNavigate();

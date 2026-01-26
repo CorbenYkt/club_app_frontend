@@ -1,19 +1,11 @@
-import {useMemo, useState} from 'react';
+import {useState} from 'react';
 import {Link, useSearchParams} from 'react-router-dom';
-import {apiPost} from '../api';
-
-function Spinner() {
-    return (
-        <span
-            className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white"
-            aria-hidden="true"
-        />
-    );
-}
+import {apiPost} from '../auth/appApi';
+import {Spinner} from '../components/Spinner';
 
 export default function ResetPasswordPage() {
     const [sp] = useSearchParams();
-    const token = useMemo(() => sp.get('token') ?? '', [sp]);
+    const token = (sp.get('token') ?? '').trim();
 
     const [p1, setP1] = useState('');
     const [p2, setP2] = useState('');
@@ -26,42 +18,37 @@ export default function ResetPasswordPage() {
         if (loading) return;
 
         setErr(null);
-        setLoading(true);
 
         if (!token) {
-            setLoading(false);
             setErr('Missing token');
             return;
         }
         if (p1.length < 8) {
-            setLoading(false);
             setErr('Password must be at least 8 characters');
             return;
         }
         if (p1 !== p2) {
-            setLoading(false);
             setErr('Passwords do not match');
             return;
         }
 
+        setLoading(true);
         try {
             await apiPost<{ok: true}>('/auth/password/reset', {token, newPassword: p1});
             setDone(true);
         } catch (e) {
-            setErr(e instanceof Error ? e.message : 'Reset failed');
+            setErr(e instanceof Error ? e.message : 'Request failed');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-slate-900 text-slate-100 antialiased">
-            <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center px-6 py-12">
-                <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
-                    {/* Top accent */}
+        <div className="min-h-dvh bg-slate-900 text-slate-100 antialiased">
+            <div className="mx-auto max-w-6xl px-4 py-4 md:px-6 md:py-10">
+                <div className="mx-auto w-full max-w-md overflow-hidden rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
                     <div className="h-1 w-full bg-green-500" />
 
-                    {/* Loading overlay */}
                     {loading && (
                         <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm">
                             <div className="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 shadow-2xl">

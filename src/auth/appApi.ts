@@ -1,6 +1,6 @@
 const RAW = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
 
-const DEFAULT_PROD_API = 'https://api.pulseclub.co.nz';
+const DEFAULT_PROD_API = import.meta.env.VITE_API_BASE_URL;
 const DEFAULT_DEV_API = 'http://localhost:4000';
 
 export const API_BASE = RAW && RAW.length > 0 ? RAW : import.meta.env.PROD ? DEFAULT_PROD_API : DEFAULT_DEV_API;
@@ -49,8 +49,65 @@ async function refreshAccessToken(): Promise<string | null> {
     return refreshPromise;
 }
 
+type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
+
+export type ApiErrorBody = {
+    error: {
+        code: string;
+        message: string;
+        details?: unknown;
+        requestId?: string;
+    };
+};
+
+function isRecord(v: unknown): v is Record<string, unknown> {
+    return typeof v === 'object' && v !== null;
+}
+
+function isApiErrorBody(x: unknown): x is ApiErrorBody {
+    if (!isRecord(x)) return false;
+    const e = x.error;
+    if (!isRecord(e)) return false;
+    return typeof e.code === 'string' && typeof e.message === 'string';
+}
+
+async function readJsonSafe(res: Response): Promise<unknown> {
+    const text = await res.text();
+    if (!text) return null;
+    try {
+        return JSON.parse(text);
+    } catch {
+        return text;
+    }
+}
+
+export class ApiError extends Error {
+    readonly status: number;
+    readonly code?: string;
+    readonly details?: unknown;
+    readonly requestId?: string;
+    readonly raw?: unknown;
+
+    constructor(args: {
+        status: number;
+        message: string;
+        code?: string;
+        details?: unknown;
+        requestId?: string;
+        raw?: unknown;
+    }) {
+        super(args.message);
+        this.name = 'ApiError';
+        this.status = args.status;
+        this.code = args.code;
+        this.details = args.details;
+        this.requestId = args.requestId;
+        this.raw = args.raw;
+    }
+}
+
 async function request<T>(
-    method: 'GET' | 'POST',
+    method: HttpMethod,
     path: string,
     body?: unknown,
     accessToken?: string,
@@ -61,11 +118,11 @@ async function request<T>(
     const res = await fetch(`${API_BASE}${path}`, {
         method,
         headers: {
-            ...(body ? {'Content-Type': 'application/json'} : {}),
+            ...(body !== undefined ? {'Content-Type': 'application/json'} : {}),
             ...(token ? {Authorization: `Bearer ${token}`} : {}),
         },
         credentials: 'include',
-        body: body ? JSON.stringify(body) : undefined,
+        body: body !== undefined ? JSON.stringify(body) : undefined,
     });
 
     if (res.status === 401 && retry) {
@@ -81,31 +138,37 @@ async function request<T>(
 
     if (!res.ok) {
         const ct = res.headers.get('content-type') || '';
-        if (ct.includes('application/json')) {
-            const json = await res.json();
-            throw new ApiError(res.status, json.message || `Request failed (${res.status})`, json.error);
+        const payload = ct.includes('application/json') ? await readJsonSafe(res) : await res.text().catch(() => null);
+
+        if (isApiErrorBody(payload)) {
+            throw new ApiError({
+                status: res.status,
+                message: payload.error.message,
+                code: payload.error.code,
+                details: payload.error.details,
+                requestId: payload.error.requestId,
+                raw: payload,
+            });
         }
-        throw new ApiError(res.status, `Request failed (${res.status})`);
+
+        throw new ApiError({
+            status: res.status,
+            message: res.statusText ? `${res.status} ${res.statusText}` : `Request failed (${res.status})`,
+            raw: payload,
+        });
     }
 
+    const ct = res.headers.get('content-type') || '';
+    if (ct.includes('application/json')) return (await res.json()) as T;
+
     const text = await res.text();
-    return text ? (JSON.parse(text) as T) : ({} as T);
+    return text as unknown as T;
 }
 
-export function apiPost<T>(path: string, body: unknown = {}, accessToken?: string) {
+export function apiPost<T>(path: string, body?: unknown, accessToken?: string) {
     return request<T>('POST', path, body, accessToken);
 }
 
 export function apiGet<T>(path: string, accessToken?: string) {
     return request<T>('GET', path, undefined, accessToken);
-}
-
-export class ApiError extends Error {
-    status: number;
-    code?: string;
-    constructor(status: number, message: string, code?: string) {
-        super(message);
-        this.status = status;
-        this.code = code;
-    }
 }

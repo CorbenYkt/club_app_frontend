@@ -1,6 +1,6 @@
 import {Link, useNavigate} from 'react-router-dom';
 import {useAuth} from '../auth/useAuth';
-import {apiPost} from '../auth/api';
+import {apiPost} from '../auth/appApi';
 
 function displayUser(user: {email: string; name?: string}) {
     if (user.name && user.name.trim()) return user.name;

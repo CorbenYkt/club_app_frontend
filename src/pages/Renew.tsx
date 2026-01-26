@@ -1,7 +1,8 @@
 import {useEffect, useState} from 'react';
-import type {SubscriptionStatusResponse} from '../../types/subscription';
-import {apiGet, apiPost} from '../api';
-import {Link} from 'react-router-dom';
+import type {SubscriptionStatusResponse} from '../types/subscription';
+import {apiGet, apiPost} from '../auth/appApi';
+import {Link, useNavigate} from 'react-router-dom';
+import {Spinner} from '../components/Spinner';
 
 type ActivateResponse = {
     ok: true;
@@ -9,15 +10,6 @@ type ActivateResponse = {
     subscriptionPlan: 'MONTHLY';
     subscriptionEndsAt: string;
 };
-
-function Spinner() {
-    return (
-        <span
-            className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white"
-            aria-hidden="true"
-        />
-    );
-}
 
 function formatNZDateTime(iso: string) {
     const d = new Date(iso);
@@ -29,6 +21,7 @@ export function Renew() {
     const [loading, setLoading] = useState(false);
     const [pageLoading, setPageLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         let alive = true;
@@ -42,7 +35,7 @@ export function Renew() {
                 setStatus(s);
             } catch (e) {
                 if (!alive) return;
-                setError(e instanceof Error ? e.message : 'Failed to load membership status');
+                setError(e instanceof Error ? e.message : 'Request failed');
                 setStatus(null);
             } finally {
                 if (alive) setPageLoading(false);
@@ -55,13 +48,16 @@ export function Renew() {
     }, []);
 
     const activate = async () => {
+        if (loading) return;
+
+        setError(null);
         setLoading(true);
+
         try {
-            const res = await apiPost<ActivateResponse>('/subscription/status');
-            setStatus((prev) => (prev ? {...prev, access: res.access, subscriptionPlan: res.subscriptionPlan} : prev));
-            window.location.assign('/dashboard');
+            await apiPost<ActivateResponse>('/subscription/status');
+            navigate('/dashboard?refresh=1', {replace: true});
         } catch (e) {
-            setError(e instanceof Error ? e.message : 'Failed to activate membership');
+            setError(e instanceof Error ? e.message : 'Request failed');
         } finally {
             setLoading(false);
         }
@@ -70,7 +66,6 @@ export function Renew() {
     return (
         <div className="min-h-screen bg-slate-900 text-slate-100 antialiased">
             <div className="mx-auto w-full max-w-3xl px-6 py-12">
-                {/* Header */}
                 <div className="mb-8">
                     <div className="mono text-xs uppercase tracking-widest text-slate-500">Member area</div>
                     <h1 className="mt-2 text-3xl font-black tracking-tight">
@@ -79,10 +74,7 @@ export function Renew() {
                     <p className="mt-2 text-sm text-slate-400">Activate your monthly plan to keep redeeming deals.</p>
                 </div>
 
-                {/* Main card */}
-                {/* Main card */}
                 <div className="rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl overflow-hidden">
-                    {/* green accent */}
                     <div className="h-1 w-full bg-green-500" />
 
                     <div className="p-6">
@@ -173,26 +165,9 @@ export function Renew() {
                                                         <Spinner /> Activating…
                                                     </span>
                                                 ) : (
-                                                    'Comming soon'
+                                                    'Coming soon'
                                                 )}
                                             </button>
-
-                                            {/* <button
-                                            onClick={activate}
-                                            disabled={loading}
-                                            className={`inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-extrabold transition ${
-                                                loading
-                                                    ? 'cursor-not-allowed bg-slate-700 text-slate-300'
-                                                    : 'bg-green-500 text-slate-950 hover:bg-green-400'
-                                            }`}>
-                                            {loading ? (
-                                                <span className="inline-flex items-center gap-2">
-                                                    <Spinner /> Activating…
-                                                </span>
-                                            ) : (
-                                                'Activate 1 month'
-                                            )}
-                                        </button> */}
                                         </div>
                                     </div>
 

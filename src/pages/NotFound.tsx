@@ -22,10 +22,9 @@ export function NotFound() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-900 text-slate-100 antialiased">
-            <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center px-6 py-12">
-                <div className="w-full max-w-md overflow-hidden rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
-                    {/* Accent bar */}
+        <div className="min-h-dvh bg-slate-900 text-slate-100 antialiased">
+            <div className="mx-auto max-w-6xl px-4 py-4 md:px-6 md:py-10">
+                <div className="mx-auto w-full max-w-md overflow-hidden rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
                     <div className="h-1 w-full bg-green-500" />
 
                     <div className="p-8 text-center">
@@ -49,12 +48,6 @@ export function NotFound() {
                                 className="inline-flex w-full items-center justify-center rounded-xl bg-green-500 px-5 py-3 font-extrabold text-slate-950 transition hover:bg-green-400">
                                 Go home
                             </Link>
-
-                            {/* <Link
-                                to="/login"
-                                className="inline-flex w-full items-center justify-center rounded-xl border border-slate-700 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-800/50">
-                                Sign in
-                            </Link> */}
                         </div>
 
                         <div className="mt-8 text-xs text-slate-500">

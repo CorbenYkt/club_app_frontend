@@ -1,19 +1,16 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {fetchVenues, type Venue} from '../venues/api';
 import {Link} from 'react-router-dom';
-
-function Spinner() {
-    return <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white" />;
-}
+import {Spinner} from '../components/Spinner';
 
 export default function VenuesPage() {
     const [q, setQ] = useState('');
-    const [onlyActive, setOnlyActive] = useState(true);
     const [data, setData] = useState<Venue[]>([]);
     const [loading, setLoading] = useState(false);
     const [err, setErr] = useState<string | null>(null);
 
-    const hasQuery = useMemo(() => q.trim().length > 0, [q]);
+    const query = q.trim();
+    const hasQuery = query.length > 0;
 
     const load = async () => {
         if (loading) return;
@@ -21,10 +18,10 @@ export default function VenuesPage() {
         setErr(null);
 
         try {
-            const res = await fetchVenues({q: q.trim() || undefined, active: onlyActive});
+            const res = await fetchVenues({q: q.trim() || undefined, active: true});
             setData(res.data);
         } catch (e) {
-            setErr(e instanceof Error ? e.message : 'Failed to load venues');
+            setErr(e instanceof Error ? e.message : 'Request failed');
         } finally {
             setLoading(false);
         }
@@ -32,11 +29,11 @@ export default function VenuesPage() {
 
     useEffect(() => {
         void load();
-    }, [onlyActive]);
+    }, []);
 
     return (
         <div className="min-h-screen bg-slate-900 text-slate-100 antialiased">
-            <div className="mx-auto max-w-6xl px-6 py-10">
+            <div className="mx-auto max-w-6xl px-4 py-4 md:px-6 md:py-10">
                 <div className="mx-auto w-full max-w-3xl overflow-hidden rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
                     <div className="h-1 w-full bg-green-500" />
 
@@ -53,7 +50,7 @@ export default function VenuesPage() {
                             </div>
                         </div>
 
-                        <div className="mt-8 space-y-4">
+                        <div className="mt-8 flex flex-col gap-6 sm:gap-6">
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                                 <div className="flex-1">
                                     <label className="sr-only" htmlFor="venue-search">
@@ -75,7 +72,7 @@ export default function VenuesPage() {
                                 <button
                                     className="inline-flex items-center justify-center gap-2 rounded-2xl bg-green-500 px-5 py-3 text-sm font-extrabold text-slate-950 transition hover:bg-green-400 disabled:opacity-60"
                                     onClick={() => void load()}
-                                    disabled={loading || (!hasQuery && onlyActive)}>
+                                    disabled={loading || !hasQuery}>
                                     {loading ? (
                                         <>
                                             <Spinner /> Searching…
@@ -86,17 +83,6 @@ export default function VenuesPage() {
                                 </button>
                             </div>
 
-                            <label className="inline-flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-800/30 px-4 py-3 text-sm">
-                                <input
-                                    type="checkbox"
-                                    className="h-4 w-4 accent-green-500"
-                                    checked={onlyActive}
-                                    onChange={(e) => setOnlyActive(e.target.checked)}
-                                    disabled={loading}
-                                />
-                                <span className="text-slate-200">Show active only</span>
-                            </label>
-
                             {err ? (
                                 <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
                                     {err}
@@ -104,7 +90,7 @@ export default function VenuesPage() {
                             ) : null}
                         </div>
 
-                        <div className="mt-8 space-y-3">
+                        <div className="mt-8 flex flex-col gap-6 sm:gap-6">
                             {loading ? (
                                 <div className="rounded-2xl border border-slate-700 bg-slate-800/30 px-5 py-4 text-sm text-slate-300">
                                     Loading venues…
@@ -118,8 +104,8 @@ export default function VenuesPage() {
                                     <div
                                         key={v.id}
                                         className="rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
-                                        <Link to={`${v.id}/qr`}>
-                                            <div className="p-6">
+                                        <Link to={`${v.id}`}>
+                                            <div className="p-4 sm:p-6">
                                                 <div className="flex items-start justify-between gap-4">
                                                     <div>
                                                         <div className="text-lg font-semibold">{v.name}</div>

@@ -1,11 +1,8 @@
 import {useMemo, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
-import {apiPost, type AuthResponse} from '../auth/api';
+import {apiPost, type AuthResponse} from '../auth/appApi';
 import {useAuth} from '../auth/useAuth';
-
-function Spinner() {
-    return <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white" />;
-}
+import {Spinner} from '../components/Spinner';
 
 export default function RegisterPage() {
     const nav = useNavigate();
@@ -29,7 +26,7 @@ export default function RegisterPage() {
         return null;
     }, [password, confirm]);
 
-    const canSubmit = !loading && !!email && !!password && !!confirm && !passwordError && !confirmError;
+    const canSubmit = !loading && email.trim().length > 0 && !!password && !!confirm && !passwordError && !confirmError;
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,11 +36,13 @@ export default function RegisterPage() {
         setLoading(true);
 
         try {
-            const session = await apiPost<AuthResponse>('/auth/register', {email, password});
+            const normalizedEmail = email.trim();
+            const session = await apiPost<AuthResponse>('/auth/register', {email: normalizedEmail, password});
             setSession(session);
-            nav('/', {replace: true});
+            nav('/dashboard', {replace: true});
         } catch (e) {
-            setErr(e instanceof Error ? e.message : 'Registration failed');
+            setErr(e instanceof Error ? e.message : 'Request failed');
+        } finally {
             setLoading(false);
         }
     };
@@ -51,7 +50,6 @@ export default function RegisterPage() {
     return (
         <div className="min-h-screen flex items-center justify-center px-4 bg-slate-900 antialiased">
             <div className="relative w-full max-w-sm rounded-3xl border border-slate-700 bg-slate-900 p-8 shadow-2xl">
-                {/* Loading overlay */}
                 {loading && (
                     <div className="absolute inset-0 z-10 rounded-3xl bg-slate-900/70 backdrop-blur-sm flex items-center justify-center">
                         <div className="flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-800 px-4 py-3">

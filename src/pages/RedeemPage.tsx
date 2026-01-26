@@ -1,6 +1,6 @@
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {Link, useSearchParams} from 'react-router-dom';
-import {apiPost} from '../auth/api';
+import {apiPost} from '../auth/appApi';
 import {useAuth} from '../auth/useAuth';
 
 type VerifyResponse =
@@ -24,26 +24,6 @@ function getChallengeFromSearchParams(sp: URLSearchParams): string | null {
     } catch {
         if (/^[A-Za-z0-9_-]{16,}$/.test(token)) return token;
         return null;
-    }
-}
-
-function friendlyReason(reason: string) {
-    switch (reason) {
-        case 'expired_or_invalid':
-            return {
-                title: 'QR expired',
-                body: 'Ask the venue to refresh the QR and scan again.',
-            };
-        case 'venue_inactive':
-            return {
-                title: 'Venue unavailable',
-                body: 'This venue is not active right now. Please try another venue.',
-            };
-        default:
-            return {
-                title: 'Not approved',
-                body: `Reason: ${reason}`,
-            };
     }
 }
 
@@ -95,21 +75,14 @@ export default function RedeemPage() {
                     setVenueName(res.venue.name);
                     setMessage('Approved! Show this screen to the cashier to get the member price.');
                 } else {
+                    setState('denied');
                     setReason(res.reason ?? null);
-
-                    if (res.message) {
-                        setMessage(res.message);
-                    } else if (res.reason) {
-                        const fr = friendlyReason(res.reason);
-                        setMessage(`${fr.title}. ${fr.body}`);
-                    } else {
-                        setMessage('Not approved');
-                    }
+                    setMessage(res.message ?? 'Not approved');
                 }
             } catch (e) {
                 if (cancelled) return;
                 setState('denied');
-                setMessage(e instanceof Error ? e.message : 'Verification failed');
+                setMessage(e instanceof Error ? e.message : 'Request failed');
             }
         })();
 
@@ -122,10 +95,9 @@ export default function RedeemPage() {
     const isDenied = state === 'denied';
 
     return (
-        <div className="min-h-screen bg-slate-900 text-slate-100 antialiased">
-            <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center px-6 py-12">
-                <div className="w-full max-w-md overflow-hidden rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
-                    {/* Accent bar */}
+        <div className="min-h-dvh bg-slate-900 text-slate-100 antialiased">
+            <div className="mx-auto max-w-6xl px-4 py-4 md:px-6 md:py-10">
+                <div className="mx-auto w-full max-w-md overflow-hidden rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
                     <div
                         className={`h-1 w-full ${isApproved ? 'bg-green-500' : isDenied ? 'bg-red-400' : 'bg-green-500'}`}
                     />

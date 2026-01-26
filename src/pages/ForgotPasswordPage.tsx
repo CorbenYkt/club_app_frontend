@@ -1,15 +1,7 @@
 import {useState} from 'react';
 import {Link} from 'react-router-dom';
-import {apiPost} from '../api';
-
-function Spinner() {
-    return (
-        <span
-            className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white/40 border-t-white"
-            aria-hidden="true"
-        />
-    );
-}
+import {apiPost} from '../auth/appApi';
+import {Spinner} from '../components/Spinner';
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
@@ -25,23 +17,23 @@ export default function ForgotPasswordPage() {
         setLoading(true);
 
         try {
-            await apiPost<{ok: true}>('/auth/password/forgot', {email});
+            const normalizedEmail = email.trim();
+            await apiPost<{ok: true}>('/auth/password/forgot', {email: normalizedEmail});
+            setEmail(normalizedEmail);
             setDone(true);
         } catch (e) {
-            setErr(e instanceof Error ? e.message : 'Failed to send reset email');
+            setErr(e instanceof Error ? e.message : 'Request failed');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-slate-900 text-slate-100 antialiased">
-            <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center px-6 py-12">
-                <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
-                    {/* Top accent */}
+        <div className="min-h-dvh bg-slate-900 text-slate-100 antialiased">
+            <div className="mx-auto max-w-6xl px-4 py-4 md:px-6 md:py-10">
+                <div className="mx-auto w-full max-w-md overflow-hidden rounded-3xl border border-slate-700 bg-slate-900 shadow-2xl">
                     <div className="h-1 w-full bg-green-500" />
 
-                    {/* Loading overlay */}
                     {loading && (
                         <div className="absolute inset-0 z-10 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm">
                             <div className="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 shadow-2xl">
